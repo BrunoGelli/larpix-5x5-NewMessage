@@ -38,19 +38,15 @@ def main(vdda, vddd, io_group=1, pacman_tile=1, verbose=True):
     pacman_version = 'v1rev5'
     pacman_tile = [PACMAN_TILE]
 
-    if pacman_version == 'v1rev5':
-        RX_REG = 0x0010201c
-        RX_VAL = 0xffffffff
-    else:
-        RX_REG = 0x001018
-        RX_VAL = 0
-    c.io.set_reg(RX_REG, RX_VAL, io_group)
+
+    #Disable all UARTs -> just poke the register 0x001003f0 to disable all (f means all)
+    c.io.set_reg(0x001003f0, 0, io_group)
 
     if True:
         print('disable pacman power')
         # disable tile power, LARPIX clock
-        c.io.set_reg(0x00100010, 0, io_group)
-        c.io.set_reg(0x00100014, 0, io_group)
+        c.io.set_reg(0x001002f0, 0, io_group) # Disable Tile Power (f means all of them)
+        c.io.set_reg(0x00100110, 0, io_group) # Disable Global Tile Power
 
         readback = power_readback(
             c.io, io_group, pacman_version, [1, 2, 3, 4, 5, 6, 7, 8])

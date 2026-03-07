@@ -90,13 +90,9 @@ def conf_root(c, cm, cadd, iog, iochan, pacman_version):
     time.sleep(0.01)
 
     # enable pacman uart receiver
-    ch_set = pow(2, iochan-1)
-    if pacman_version == 'v1rev5':
-        rx_en = c.io.get_reg(0x0010201c, iog)
-        c.io.set_reg(0x0010201c, rx_en ^ ch_set, iog)
-    else:
-        rx_en = c.io.get_reg(0x18, iog)
-        c.io.set_reg(0x18, rx_en | ch_set, iog)
+    c.io.set_reg(0x00100314, iochan-1, iog)
+
+    # enforce asic config
     ok, diff = c.enforce_configuration(cm, n=2, n_verify=2, timeout=0.05)
     if not ok:
         ok, diff = c.enforce_configuration(cm, n=2, n_verify=2, timeout=0.05)
@@ -187,16 +183,9 @@ def main(io_group=1, pacman_tile='1', verbose=True):
     # create a larpix controller
     c = larpix.Controller()
     c.io = larpix.io.PACMAN_IO(relaxed=True, asic_version=3)
-    
-    if pacman_version == 'v1rev5':
-        RX_REG = 0x0010201c
-        RX_VAL = 0xffffffff
-    else:
-        RX_REG = 0x18
-        RX_VAL = 0
-    rx_en = c.io.get_reg(RX_REG, io_group)
-    print(rx_en)
-    c.io.set_reg(RX_REG, RX_VAL, io_group)
+
+    #Disable all UARTs -> just poke the register 0x001003f0 to disable all (f means all)
+    c.io.set_reg(0x001003f0, 0, io_group)
 
     c.io.reset_larpix(length=1024)
     c.io.reset_larpix(length=1024)
