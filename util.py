@@ -81,7 +81,7 @@ def extract_thresholds(threshold_file_name, pedestal_file_name):
 def now():
     return time.strftime("%Y_%m_%d_%H_%M_%S_%Z")
 
-def data(c, runtime, data_dir=_default_data_dir, fname=None, tag=None):  
+def data(c, runtime, io_group, data_dir=_default_data_dir, fname=None, tag=None):
     if True:
         if fname is None: 
             if not tag is None:
@@ -93,7 +93,8 @@ def data(c, runtime, data_dir=_default_data_dir, fname=None, tag=None):
         c.logger = larpix.logger.HDF5Logger(filename=fname)
         print('filename: ',c.logger.filename)
         c.reads.clear() 
-        c.io.reset_larpix(length=16)
+        # request internal reset of asics for the provided tile mask
+        c.io.set_reg(0x00100410, 0x3ff, io_group) 
         c.logger.enable()
         c.run(runtime,' collecting data')
         c.logger.flush()

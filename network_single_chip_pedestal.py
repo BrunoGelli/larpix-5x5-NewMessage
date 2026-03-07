@@ -187,8 +187,10 @@ def main(io_group=1, pacman_tile='1', verbose=True):
     #Disable all UARTs -> just poke the register 0x001003f0 to disable all (f means all)
     c.io.set_reg(0x001003f0, 0, io_group)
 
-    c.io.reset_larpix(length=1024)
-    c.io.reset_larpix(length=1024)
+
+    # request full reset at 0x00100420 and provide tile mask
+    c.io.set_reg(0x00100420, 0x3ff, io_group)
+
 
     all_keys = []
     for PACMAN_TILE in list_pacman_tiles:
@@ -202,6 +204,9 @@ def main(io_group=1, pacman_tile='1', verbose=True):
         enable_pedestal(c, chip11_key, vref_dac=223)
         unmask(c, all_keys)
 
+    # request internal reset at 0x00100410 and provided tile mask
+    c.io.set_reg(0x00100410, 0x3ff, io_group)
+
     return
 
 
@@ -213,3 +218,5 @@ if __name__ == '__main__':
                         type=str, help='''Which tile output to use''')
     args = parser.parse_args()
     main(**vars(args))
+
+

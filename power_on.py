@@ -85,9 +85,6 @@ def main(vdda, vddd, io_group=1, pacman_tile='1', verbose=True):
         c.io.set_reg(0x00200020+(PACMAN_TILE-1), VDDD_DAC[PACMAN_TILE], io_group)
         c.io.set_reg(0x00200010+(PACMAN_TILE-1), VDDA_DAC[PACMAN_TILE], io_group)
 
-    c.io.reset_larpix(length=1024)
-    c.io.reset_larpix(length=1024)
-
     # enable tile power
     tile_enable_sum = 0
     tile_enable_val = 0
@@ -101,10 +98,9 @@ def main(vdda, vddd, io_group=1, pacman_tile='1', verbose=True):
     readback = power_readback(
         c.io, io_group, pacman_version, list_pacman_tiles)
 
-    c.io.reset_larpix(length=1024)
-    c.io.reset_larpix(length=1024)
-    c.io.reset_larpix(length=1024)
-    c.io.reset_larpix(length=1024)
+    # sending reset and waiting for it to be completed
+    c.io.set_reg(0x00100420, 0x3ff, io_group)
+    time.sleep(0.001) # factor of 10 longer than 1024*100ns
 
     with open('controller.pkl', 'wb') as f:
         c.io = None

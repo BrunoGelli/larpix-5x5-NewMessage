@@ -49,7 +49,7 @@ def main(vdda, vddd, io_group=1, pacman_tile=1, verbose=True):
         c.io.set_reg(0x00100110, 0, io_group) # Disable Global Tile Power
 
         readback = power_readback(
-            c.io, io_group, pacman_version, [1, 2, 3, 4, 5, 6, 7, 8])
+            c.io, io_group, pacman_version, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
         time.sleep(0.015)
 
 

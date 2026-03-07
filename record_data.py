@@ -28,8 +28,8 @@ def main(runtime=60, file_count=1, data_dir='data/', tag=None):
     c.io = larpix.io.PACMAN_IO(relaxed=True, asic_version=3)
 
     for i in range(file_count):
-        data(c,runtime, data_dir=data_dir, tag=tag )
-
+        data(c,runtime, 1, data_dir=data_dir, tag=tag )
+        #def data(c, runtime, data_dir=_default_data_dir, io_group, fname=None, tag=None):
 
 if __name__ == '__main__':
         parser = argparse.ArgumentParser()
