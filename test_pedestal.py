@@ -13,7 +13,7 @@ def unmask(c, keys):
         for key in reversed(keys):
 
             c[key].config.csa_enable= [1]*64
-            c[key].config.channel_mask= [1]*64
+            c[key].config.channel_mask= [0]*64
             c[key].config.periodic_trigger_mask=[0]*64
             c.write_configuration(key, 'periodic_trigger_mask')
             c.write_configuration(key, 'csa_enable')
@@ -29,13 +29,13 @@ def enable_pedestal(c, key, vref_dac=255):
     c[key].config.enable_periodic_trigger=1
     c[key].config.enable_rolling_periodic_trigger=1
     c[key].config.enable_periodic_reset=1
-    c[key].config.enable_rolling_periodic_reset=0
+    c[key].config.enable_rolling_periodic_reset=1
     c[key].config.enable_hit_veto=1
     c[key].config.enable_periodic_trigger_veto=0
 
-    c[key].config.threshold_global = 255
-    c[key].config.periodic_trigger_cycles = 100000
-    c[key].config.periodic_reset_cycles = 512
+    c[key].config.threshold_global = 50 #255
+    c[key].config.periodic_trigger_cycles = 578121
+    c[key].config.periodic_reset_cycles = 4
 
     c[key].config.cds_mode=0
     c[key].config.enable_data_stats=0
@@ -49,7 +49,6 @@ def enable_pedestal(c, key, vref_dac=255):
 
     c[key].config.adc_ibias_delay = 15
     c.write_configuration(key, 'adc_ibias_delay')
-    
 
     c.write_configuration(key, 'vref_dac')
 
@@ -63,7 +62,6 @@ def enable_pedestal(c, key, vref_dac=255):
     c.write_configuration(key, 'enable_periodic_trigger_veto')
     c.write_configuration(key, 'threshold_global')
     c.write_configuration(key, 'periodic_trigger_cycles')
-    
     c.write_configuration(key, 'periodic_reset_cycles')
 
     ok, diff = c.enforce_configuration(key, n=3, n_verify=3, timeout=0.1)
@@ -77,17 +75,23 @@ def main():
     #load controller
     c=load_controller()
     c.io = larpix.io.PACMAN_IO(relaxed=True, asic_version=3)
-   
+    
     c.io.reset_larpix(length=16)
-    all_keys = c.chips.keys()
-    for key in all_keys: 
+    chip11_key = larpix.key.Key(1, 1, 11)
+
+    all_keys=[]
+    all_keys.append(chip11_key)
+#    all_keys = c.chips.keys()
+    print("entering key loop")
+    for key in all_keys:
+        print(key)
         enable_pedestal(c, key, vref_dac=223)
     unmask(c, all_keys)
 
     c.io.reset_larpix(length=16)
     c.io.reset_larpix(length=16)
         
-    data(c,200, tag='pedestal')
+    data(c, 60, tag='pedestal')
 
 
 if __name__ == '__main__':

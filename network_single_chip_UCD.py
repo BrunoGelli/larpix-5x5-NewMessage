@@ -5,7 +5,7 @@ import argparse
 import time
 
 import pickle
-
+from util import data
 
 def read(c, key, param):
     c.reads = []
@@ -148,7 +148,7 @@ def main(vdda, vddd, io_group=1, pacman_tile=1, verbose=True):
     set_register(c, chip11_key, 'channel_mask', [0]*64)
     set_register(c, chip11_key, 'csa_enable', [1]*64)
     set_register(c, chip11_key, 'enable_periodic_reset', 1)
-    set_register(c, chip11_key, 'periodic_reset_cycles', 4)
+    set_register(c, chip11_key, 'periodic_reset_cycles', 40)
     set_register(c, chip11_key, 'threshold_global', 255)
 
     # Check that all of the registers were successfully written!
@@ -161,7 +161,25 @@ def main(vdda, vddd, io_group=1, pacman_tile=1, verbose=True):
     else:
         print('Not enforced correctly:', diff)
 
-    
+    print("lowering threshold")
+    set_register(c, chip11_key, 'threshold_global', 10)
+    c.write_configuration(chip11_key, 'threshold_global')
+
+        
+#    print("Enabling rolling peroid trigger")
+
+#    set_register(c, chip11_key, 'enable_periodic_trigger', 1)
+#    set_register(c, chip11_key, 'enable_rolling_periodic_trigger', 1)
+#    set_register(c, chip11_key, 'periodic_trigger_cycles', 4)
+
+#    ok, diff = c.enforce_configuration(chip11_key, n=3, n_verify=3)
+#    if ok:
+#        print('Enforced successfully!')
+#    else:
+#        print('Not enforced correctly:', diff)
+
+    print("Starting data acquisition...")
+    data(c, 60, tag='UCD-self_trigger')
 
     return
 if __name__ == '__main__':

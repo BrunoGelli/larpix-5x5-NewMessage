@@ -2,7 +2,7 @@
     "_config_type": "io",
     "io_class": "PACMAN_IO",
     "io_group": [ 
-        [1, "pacman25.local"]
+        [1, "pacman-dev1.physics.ucdavis.edu"]
     ]
     
 }

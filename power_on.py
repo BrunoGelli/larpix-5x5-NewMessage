@@ -12,18 +12,18 @@ def power_readback(io, io_group, pacman_version, tile):
     for i in tile:
         readback[i]=[]
         if pacman_version=='v1rev5':
-            vdda=io.get_reg(0x24030+(i-1), io_group=io_group)
-            vddd=io.get_reg(0x24040+(i-1), io_group=io_group)
-            idda=io.get_reg(0x24050+(i-1), io_group=io_group)
-            iddd=io.get_reg(0x24060+(i-1), io_group=io_group)
+            vdda=io.get_reg(0x00200030+(i-1), io_group=io_group)
+            vddd=io.get_reg(0x00200040+(i-1), io_group=io_group)
+            idda=io.get_reg(0x00200050+(i-1), io_group=io_group)
+            iddd=io.get_reg(0x00200060+(i-1), io_group=io_group)
             print('Tile ',i,'  VDDA: ',vdda,' mV  IDDA: ', idda/4,' mA  ',
                   'VDDD: ',vddd,' mV  IDDD: ',iddd/4,' mA')
             readback[i]=[vdda, idda/4, vddd, iddd/4]
         elif pacman_version=='v1rev4':
-            vdda=io.get_reg(0x24030+(i-1), io_group=io_group)
-            vddd=io.get_reg(0x24040+(i-1), io_group=io_group)
-            idda=io.get_reg(0x24050+(i-1), io_group=io_group)
-            iddd=io.get_reg(0x24060+(i-1), io_group=io_group)
+            vdda=io.get_reg(0x00200030+(i-1), io_group=io_group)
+            vddd=io.get_reg(0x00200040+(i-1), io_group=io_group)
+            idda=io.get_reg(0x00200050+(i-1), io_group=io_group)
+            iddd=io.get_reg(0x00200060+(i-1), io_group=io_group)
             print('Tile ',i,'  VDDA: ',vdda,' mV  IDDA: ',int(idda*0.1),' mA  ',
                   'VDDD: ',vddd,' mV  IDDD: ',int(iddd>>12),' mA')
             readback[i]=[vdda, idda*0.1, vddd, iddd>>12]
@@ -96,38 +96,27 @@ def main(vdda, vddd, io_group=1, pacman_tile='1', verbose=True):
 
     if pacman_version == 'v1rev5': 
         CLK_RATIO = 1
-        RX_REG = 0x201c
+        RX_REG = 0x0010201c
         RX_VAL = 0xffffffff
     else:
         CLK_RATIO = 5
-        RX_REG = 0x18
+        RX_REG = 0x00100018
         RX_VAL = 0
 
     c.io.set_reg(RX_REG, RX_VAL, io_group)
 
     print('enable pacman power')
-    # set up mclk in pacman
-    c.io.set_reg(0x101c, 4, io_group)
 
-    # enable pacman power
-    c.io.set_reg(0x00000014, 1, io_group)
+    #Enable_Global_Tile_Power -> just poke the register. 0x00100104 to disable.
+    c.io.set_reg(0x00100100, 0, io_group)
 
     # set uart clock ratio and power for all tiles
     for PACMAN_TILE in list_pacman_tiles:
         IO_CHAN = (PACMAN_TILE-1) * 4 + 1
-        c.io.set_uart_clock_ratio(IO_CHAN,   CLK_RATIO)
-        time.sleep(0.015)
-        c.io.set_uart_clock_ratio(IO_CHAN+1, CLK_RATIO)
-        time.sleep(0.015)
-        c.io.set_uart_clock_ratio(IO_CHAN+2, CLK_RATIO)
-        time.sleep(0.015)
-        c.io.set_uart_clock_ratio(IO_CHAN+3, CLK_RATIO)
-
-        time.sleep(0.015)
 
         # set voltage dacs  VDDD first
-        c.io.set_reg(0x24020+(PACMAN_TILE-1), VDDD_DAC[PACMAN_TILE], io_group)
-        c.io.set_reg(0x24010+(PACMAN_TILE-1), VDDA_DAC[PACMAN_TILE], io_group)
+        c.io.set_reg(0x00200020+(PACMAN_TILE-1), VDDD_DAC[PACMAN_TILE], io_group)
+        c.io.set_reg(0x00200010+(PACMAN_TILE-1), VDDA_DAC[PACMAN_TILE], io_group)
 
     c.io.reset_larpix(length=1024)
     c.io.reset_larpix(length=1024)
@@ -137,8 +126,8 @@ def main(vdda, vddd, io_group=1, pacman_tile='1', verbose=True):
     tile_enable_val = 0
     for PACMAN_TILE in list_pacman_tiles:
         tile_enable_sum = pow(2, PACMAN_TILE-1) + tile_enable_sum
-        tile_enable_val = tile_enable_sum+0x0200  # enable one tile at a time
-        c.io.set_reg(0x00000010, tile_enable_val, io_group)
+        tile_enable_val = tile_enable_sum #+0x0200  # enable one tile at a time
+        c.io.set_reg(0x00100010, tile_enable_val, io_group)
         time.sleep(0.05)
 
     print('Power readback after power on:')

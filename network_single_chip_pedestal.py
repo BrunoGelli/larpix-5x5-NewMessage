@@ -92,8 +92,8 @@ def conf_root(c, cm, cadd, iog, iochan, pacman_version):
     # enable pacman uart receiver
     ch_set = pow(2, iochan-1)
     if pacman_version == 'v1rev5':
-        rx_en = c.io.get_reg(0x201c, iog)
-        c.io.set_reg(0x201c, rx_en ^ ch_set, iog)
+        rx_en = c.io.get_reg(0x0010201c, iog)
+        c.io.set_reg(0x0010201c, rx_en ^ ch_set, iog)
     else:
         rx_en = c.io.get_reg(0x18, iog)
         c.io.set_reg(0x18, rx_en | ch_set, iog)
@@ -114,13 +114,13 @@ def enable_pedestal(c, key, vref_dac=255):
     c[key].config.enable_periodic_trigger = 1
     c[key].config.enable_rolling_periodic_trigger = 1
     c[key].config.enable_periodic_reset = 1
-    c[key].config.enable_rolling_periodic_reset = 0
+    c[key].config.enable_rolling_periodic_reset = 1
     c[key].config.enable_hit_veto = 1
     c[key].config.enable_periodic_trigger_veto = 0
 
     c[key].config.threshold_global = 255
-    c[key].config.periodic_trigger_cycles = 40000
-    c[key].config.periodic_reset_cycles = 512
+    c[key].config.periodic_trigger_cycles = 578125
+    c[key].config.periodic_reset_cycles = 40
 
     c[key].config.cds_mode = 0
     c[key].config.enable_data_stats = 0
@@ -177,7 +177,7 @@ def main(io_group=1, pacman_tile='1', verbose=True):
 
     ###########################################
     IO_GROUP = io_group
-    pacman_version = 'v1rev4'
+    pacman_version = 'v1rev5'
     list_pacman_tiles = pacman_tile.split(',')
     for i in range(len(list_pacman_tiles)):
         list_pacman_tiles[i] = int(list_pacman_tiles[i].strip())
@@ -189,7 +189,7 @@ def main(io_group=1, pacman_tile='1', verbose=True):
     c.io = larpix.io.PACMAN_IO(relaxed=True, asic_version=3)
     
     if pacman_version == 'v1rev5':
-        RX_REG = 0x201c
+        RX_REG = 0x0010201c
         RX_VAL = 0xffffffff
     else:
         RX_REG = 0x18
@@ -207,7 +207,7 @@ def main(io_group=1, pacman_tile='1', verbose=True):
 
         chip11_key = larpix.key.Key(IO_GROUP, IO_CHAN, 11)
 
-        conf_root(c, chip11_key, 11, IO_GROUP, IO_CHAN)
+        conf_root(c, chip11_key, 11, IO_GROUP, IO_CHAN, "v1rev5")
         all_keys.append(chip11_key)
 
         enable_pedestal(c, chip11_key, vref_dac=223)
