@@ -16,7 +16,6 @@ Compared to older workflows, this code now reflects the new firmware control sty
 1. **Register-driven reset control**
    - **Full reset**: write (`poke`) register `0x00100420`.
    - **Internal reset / state-machine reset**: write (`poke`) register `0x00100410`.
-   - Yes, `...420` is intentional. 😎
 
 2. **Register-driven tile power enable/disable**
    - Tile/global power actions are done by writing dedicated control addresses.
