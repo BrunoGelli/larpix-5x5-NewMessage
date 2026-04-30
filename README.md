@@ -92,16 +92,13 @@ Compared to older workflows, this code now reflects the new firmware control sty
 - `read_power.py`  
   Readback helper for tile voltage/current monitors.
 
-### Data taking and network setup
+### Data taking and network setup (The few ones reworked to deal with the new firmware and messager) 
 
-- `network_5x5.py` (+ alternative/single-chip variants)  
+- `network_single_chip_pedestal.py` (+ alternative/single-chip variants)  
   ASIC network bring-up and configuration logic.
 
 - `record_data.py`  
   Runs timed data collection jobs.
-
-- `util.py`  
-  Shared helpers for geometry, pedestal/threshold extraction, controller serialization, and data acquisition routines.
 
 ---
 
