@@ -348,6 +348,8 @@ def main(vdda, vddd, verbose=True):
     enable_pedestal(c, chip11_key, vref_dac=223)
     enable_pedestal(c, chip12_key, vref_dac=223)
 
+    unmask(c, all_keys)
+
     # request internal reset at 0x00100410 and provided tile mask
     c.io.set_reg(0x00100410, 0x3ff, io_group)
 
