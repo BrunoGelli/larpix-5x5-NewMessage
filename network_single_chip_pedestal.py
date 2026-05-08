@@ -115,7 +115,7 @@ def enable_pedestal(c, key, vref_dac=255):
     c[key].config.enable_periodic_trigger_veto = 0
 
     c[key].config.threshold_global = 255
-    c[key].config.periodic_trigger_cycles = 578125
+    c[key].config.periodic_trigger_cycles = 57812
     c[key].config.periodic_reset_cycles = 40
 
     c[key].config.cds_mode = 0

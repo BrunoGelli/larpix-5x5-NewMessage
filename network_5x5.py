@@ -295,128 +295,128 @@ def main(vdda, vddd, verbose=True):
 
 
     # add third chip
-    chip13_key = larpix.key.Key(IO_GROUP, IO_CHAN, 13)
-    conf_east(c, chip12_key, chip13_key, 13, IO_GROUP, IO_CHAN)
-    all_keys.append(chip13_key)
-
-    # add fourth chip
-    chip14_key = larpix.key.Key(IO_GROUP, IO_CHAN, 14)
-    conf_east(c, chip13_key, chip14_key, 14, IO_GROUP, IO_CHAN)
-    all_keys.append(chip14_key)
-
-    # add fifth chip
-    chip15_key = larpix.key.Key(IO_GROUP, IO_CHAN, 15)
-    conf_east(c, chip14_key, chip15_key, 15, IO_GROUP, IO_CHAN)
-    all_keys.append(chip15_key)
-    
-    # add second root chain
-    IO_CHAN = IO_CHAN + 1
-    
-    #print('IO_CHAN')
-    chip21_key = larpix.key.Key(IO_GROUP, IO_CHAN, 21)
-    conf_root(c, chip21_key, 21, IO_GROUP, IO_CHAN, pacman_version)
-    all_keys.append(chip21_key)
-    
-    # add second chip
-    chip22_key = larpix.key.Key(IO_GROUP, IO_CHAN, 22)
-    conf_east(c, chip21_key, chip22_key, 22, IO_GROUP, IO_CHAN)
-    all_keys.append(chip22_key)
-
-    # # add third chip
-    chip23_key = larpix.key.Key(IO_GROUP, IO_CHAN, 23)
-    conf_east(c, chip22_key, chip23_key, 23, IO_GROUP, IO_CHAN)
-    all_keys.append(chip23_key)
-
-    # add fourth chip
-    chip24_key = larpix.key.Key(IO_GROUP, IO_CHAN, 24)
-    conf_east(c, chip23_key, chip24_key, 24, IO_GROUP, IO_CHAN)
-    all_keys.append(chip24_key)
-
-    # add fifth chip
-    chip25_key = larpix.key.Key(IO_GROUP, IO_CHAN, 25)
-    conf_east(c, chip24_key, chip25_key, 25, IO_GROUP, IO_CHAN)
-    all_keys.append(chip25_key)
-
-    # add third root chain
-    IO_CHAN = IO_CHAN + 1
-    
-    chip31_key = larpix.key.Key(IO_GROUP, IO_CHAN, 31)
-    conf_root(c, chip31_key, 31, IO_GROUP, IO_CHAN, pacman_version)
-    all_keys.append(chip31_key)
-    
-    # add second chip
-    chip32_key = larpix.key.Key(IO_GROUP, IO_CHAN, 32)
-    conf_east(c, chip31_key, chip32_key, 32, IO_GROUP, IO_CHAN)
-    all_keys.append(chip32_key)
-
-    # add third chip
-    chip33_key = larpix.key.Key(IO_GROUP, IO_CHAN, 33)
-    conf_east(c, chip32_key, chip33_key, 33, IO_GROUP, IO_CHAN)
-    all_keys.append(chip33_key)
-    # add fourth chip
-    chip34_key = larpix.key.Key(IO_GROUP, IO_CHAN, 34)
-    conf_east(c, chip33_key, chip34_key, 34, IO_GROUP, IO_CHAN)
-    all_keys.append(chip34_key)
-
-    # add fifth chip
-    chip35_key = larpix.key.Key(IO_GROUP, IO_CHAN, 35)
-    conf_east(c, chip34_key, chip35_key, 35, IO_GROUP, IO_CHAN)
-    all_keys.append(chip35_key)
-    
-    # add fourth root chain
-     
-    IO_CHAN = IO_CHAN + 1
-
-    chip41_key = larpix.key.Key(IO_GROUP, IO_CHAN, 41)
-    
-    conf_root(c, chip41_key, 41, IO_GROUP, IO_CHAN, pacman_version)
-    #conf_south(c, chip31_key, chip41_key, 41, IO_GROUP, IO_CHAN)
-    all_keys.append(chip41_key)
-    
-    # add second chip
-    chip42_key = larpix.key.Key(IO_GROUP, IO_CHAN, 42)
-    conf_east(c, chip41_key, chip42_key, 42, IO_GROUP, IO_CHAN)
-    all_keys.append(chip42_key)
-
-    # add third chip
-    chip43_key = larpix.key.Key(IO_GROUP, IO_CHAN, 43)
-    conf_east(c, chip42_key, chip43_key, 43, IO_GROUP, IO_CHAN)
-    all_keys.append(chip43_key)
-    
-    # add fourth chip
-    chip44_key = larpix.key.Key(IO_GROUP, IO_CHAN, 44)
-    conf_east(c, chip43_key, chip44_key, 44, IO_GROUP, IO_CHAN)
-    all_keys.append(chip44_key)
-
-    # add fifth chip
-    chip45_key = larpix.key.Key(IO_GROUP, IO_CHAN, 45)
-    conf_east(c, chip44_key, chip45_key, 45, IO_GROUP, IO_CHAN)
-    all_keys.append(chip45_key)
-
-    # add 51 south
-    chip51_key=larpix.key.Key(IO_GROUP,IO_CHAN,51)
-    conf_south(c,chip41_key,chip51_key,51,IO_GROUP,IO_CHAN)
-    all_keys.append(chip51_key)
-
-    # add 52 south
-    chip52_key=larpix.key.Key(IO_GROUP,IO_CHAN,52)
-    conf_east(c,chip51_key,chip52_key,52,IO_GROUP,IO_CHAN)
-    all_keys.append(chip52_key)
-
-    # add 53 south
-    chip53_key=larpix.key.Key(IO_GROUP,IO_CHAN,53)
-    conf_east(c,chip52_key,chip53_key,53,IO_GROUP,IO_CHAN)
-    all_keys.append(chip53_key)
-
-    # add 54 south
-    chip54_key=larpix.key.Key(IO_GROUP,IO_CHAN,54)
-    conf_east(c,chip53_key,chip54_key,54,IO_GROUP,IO_CHAN)
-    all_keys.append(chip54_key)
-
-    # add 54 south
-    chip55_key=larpix.key.Key(IO_GROUP,IO_CHAN,55)
-    conf_east(c,chip54_key,chip55_key,55,IO_GROUP,IO_CHAN)
-    all_keys.append(chip55_key)
+#    chip13_key = larpix.key.Key(IO_GROUP, IO_CHAN, 13)
+#    conf_east(c, chip12_key, chip13_key, 13, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip13_key)
+#
+#    # add fourth chip
+#    chip14_key = larpix.key.Key(IO_GROUP, IO_CHAN, 14)
+#    conf_east(c, chip13_key, chip14_key, 14, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip14_key)
+#
+#    # add fifth chip
+#    chip15_key = larpix.key.Key(IO_GROUP, IO_CHAN, 15)
+#    conf_east(c, chip14_key, chip15_key, 15, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip15_key)
+#    
+#    # add second root chain
+#    IO_CHAN = IO_CHAN + 1
+#    
+#    #print('IO_CHAN')
+#    chip21_key = larpix.key.Key(IO_GROUP, IO_CHAN, 21)
+#    conf_root(c, chip21_key, 21, IO_GROUP, IO_CHAN, pacman_version)
+#    all_keys.append(chip21_key)
+#    
+#    # add second chip
+#    chip22_key = larpix.key.Key(IO_GROUP, IO_CHAN, 22)
+#    conf_east(c, chip21_key, chip22_key, 22, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip22_key)
+#
+#    # # add third chip
+#    chip23_key = larpix.key.Key(IO_GROUP, IO_CHAN, 23)
+#    conf_east(c, chip22_key, chip23_key, 23, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip23_key)
+#
+#    # add fourth chip
+#    chip24_key = larpix.key.Key(IO_GROUP, IO_CHAN, 24)
+#    conf_east(c, chip23_key, chip24_key, 24, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip24_key)
+#
+#    # add fifth chip
+#    chip25_key = larpix.key.Key(IO_GROUP, IO_CHAN, 25)
+#    conf_east(c, chip24_key, chip25_key, 25, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip25_key)
+#
+#    # add third root chain
+#    IO_CHAN = IO_CHAN + 1
+#    
+#    chip31_key = larpix.key.Key(IO_GROUP, IO_CHAN, 31)
+#    conf_root(c, chip31_key, 31, IO_GROUP, IO_CHAN, pacman_version)
+#    all_keys.append(chip31_key)
+#    
+#    # add second chip
+#    chip32_key = larpix.key.Key(IO_GROUP, IO_CHAN, 32)
+#    conf_east(c, chip31_key, chip32_key, 32, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip32_key)
+#
+#    # add third chip
+#    chip33_key = larpix.key.Key(IO_GROUP, IO_CHAN, 33)
+#    conf_east(c, chip32_key, chip33_key, 33, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip33_key)
+#    # add fourth chip
+#    chip34_key = larpix.key.Key(IO_GROUP, IO_CHAN, 34)
+#    conf_east(c, chip33_key, chip34_key, 34, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip34_key)
+#
+#    # add fifth chip
+#    chip35_key = larpix.key.Key(IO_GROUP, IO_CHAN, 35)
+#    conf_east(c, chip34_key, chip35_key, 35, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip35_key)
+#    
+#    # add fourth root chain
+#     
+#    IO_CHAN = IO_CHAN + 1
+#
+#    chip41_key = larpix.key.Key(IO_GROUP, IO_CHAN, 41)
+#    
+#    conf_root(c, chip41_key, 41, IO_GROUP, IO_CHAN, pacman_version)
+#    #conf_south(c, chip31_key, chip41_key, 41, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip41_key)
+#    
+#    # add second chip
+#    chip42_key = larpix.key.Key(IO_GROUP, IO_CHAN, 42)
+#    conf_east(c, chip41_key, chip42_key, 42, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip42_key)
+#
+#    # add third chip
+#    chip43_key = larpix.key.Key(IO_GROUP, IO_CHAN, 43)
+#    conf_east(c, chip42_key, chip43_key, 43, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip43_key)
+#    
+#    # add fourth chip
+#    chip44_key = larpix.key.Key(IO_GROUP, IO_CHAN, 44)
+#    conf_east(c, chip43_key, chip44_key, 44, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip44_key)
+#
+#    # add fifth chip
+#    chip45_key = larpix.key.Key(IO_GROUP, IO_CHAN, 45)
+#    conf_east(c, chip44_key, chip45_key, 45, IO_GROUP, IO_CHAN)
+#    all_keys.append(chip45_key)
+#
+#    # add 51 south
+#    chip51_key=larpix.key.Key(IO_GROUP,IO_CHAN,51)
+#    conf_south(c,chip41_key,chip51_key,51,IO_GROUP,IO_CHAN)
+#    all_keys.append(chip51_key)
+#
+#    # add 52 south
+#    chip52_key=larpix.key.Key(IO_GROUP,IO_CHAN,52)
+#    conf_east(c,chip51_key,chip52_key,52,IO_GROUP,IO_CHAN)
+#    all_keys.append(chip52_key)
+#
+#    # add 53 south
+#    chip53_key=larpix.key.Key(IO_GROUP,IO_CHAN,53)
+#    conf_east(c,chip52_key,chip53_key,53,IO_GROUP,IO_CHAN)
+#    all_keys.append(chip53_key)
+#
+#    # add 54 south
+#    chip54_key=larpix.key.Key(IO_GROUP,IO_CHAN,54)
+#    conf_east(c,chip53_key,chip54_key,54,IO_GROUP,IO_CHAN)
+#    all_keys.append(chip54_key)
+#
+#    # add 54 south
+#    chip55_key=larpix.key.Key(IO_GROUP,IO_CHAN,55)
+#    conf_east(c,chip54_key,chip55_key,55,IO_GROUP,IO_CHAN)
+#    all_keys.append(chip55_key)
     ##
     # Write some registers to all of the chips
     

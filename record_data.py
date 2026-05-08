@@ -21,7 +21,7 @@ def unmask(c, keys):
             c.write_configuration(key, 'channel_mask')
 
 
-def main(runtime=60, file_count=1, data_dir='data/', tag=None):
+def main(runtime=1, file_count=1, data_dir='data/', tag=None):
 
     #load controller
     c=larpix.Controller()
