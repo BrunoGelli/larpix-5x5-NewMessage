@@ -171,6 +171,68 @@ def read(c, key, param):
         # return msg.chip_id
     return 0
 
+def enable_pedestal(c, key, vref_dac=255):
+
+    c[key].config.enable_external_sync = 1
+    c.write_configuration(key, 'enable_external_sync')
+    c[key].config.mark_first_packet = 0
+    c.write_configuration(key, 'mark_first_packet')
+    c[key].config.enable_periodic_trigger = 1
+    c[key].config.enable_rolling_periodic_trigger = 1
+    c[key].config.enable_periodic_reset = 1
+    c[key].config.enable_rolling_periodic_reset = 1
+    c[key].config.enable_hit_veto = 1
+    c[key].config.enable_periodic_trigger_veto = 0
+
+    c[key].config.threshold_global = 255
+    c[key].config.periodic_trigger_cycles = 57812
+    c[key].config.periodic_reset_cycles = 40
+
+    c[key].config.cds_mode = 0
+    c[key].config.enable_data_stats = 0
+    c[key].config.vref_dac = vref_dac
+
+    c[key].config.ibias_vcm_buffer = 15
+    c.write_configuration(key, 'ibias_vcm_buffer')
+
+    c[key].config.adc_comp_trim = 2
+    c.write_configuration(key, 'adc_comp_trim')
+
+    c[key].config.adc_ibias_delay = 7
+    c.write_configuration(key, 'adc_ibias_delay')
+
+    c.write_configuration(key, 'vref_dac')
+
+    c.write_configuration(key, 'enable_data_stats')
+    c.write_configuration(key, 'enable_periodic_trigger')
+    c.write_configuration(key, 'cds_mode')
+    c.write_configuration(key, 'enable_rolling_periodic_trigger')
+    c.write_configuration(key, 'enable_periodic_reset')
+    c.write_configuration(key, 'enable_rolling_periodic_reset')
+    c.write_configuration(key, 'enable_hit_veto')
+    c.write_configuration(key, 'enable_periodic_trigger_veto')
+    c.write_configuration(key, 'threshold_global')
+    c.write_configuration(key, 'periodic_trigger_cycles')
+
+    c.write_configuration(key, 'periodic_reset_cycles')
+
+    ok, diff = c.enforce_configuration(key, n=3, n_verify=3, timeout=0.1)
+    print(key, ' pedestal enabled:', ok)
+    if not ok:
+        print(diff)
+
+def unmask(c, keys):
+    for i in range(10):
+        for key in reversed(keys):
+
+            c[key].config.csa_enable = [1]*64
+            c[key].config.channel_mask = [1]*64
+            c[key].config.periodic_trigger_mask = [0]*64
+            c.write_configuration(key, 'periodic_trigger_mask')
+            c.write_configuration(key, 'csa_enable')
+            c.write_configuration(key, 'channel_mask')
+
+
 def conf_root(c, cm, cadd, iog, iochan, pacman_version):
     I_TX_DIFF = 7
     TX_SLICE = 15
@@ -264,17 +326,7 @@ def main(vdda, vddd, verbose=True):
     pacman_version = 'v1rev5'
     pacman_tile = [PACMAN_TILE]
 
-    # if pacman_version == 'v1rev5':
-    #     RX_REG = 0x201c
-    #     RX_VAL = 0xffffffff
-    # else:
-    #     RX_REG = 0x18
-    #     RX_VAL = 0
-    # c.io.set_reg(RX_REG, RX_VAL, io_group)
-
-    # c.io.reset_larpix(length=1024)
-
-    #Disable all UARTs -> just poke the register 0x001003f0 to disable all (f means all)
+      #Disable all UARTs -> just poke the register 0x001003f0 to disable all (f means all)
     c.io.set_reg(0x001003f0, 0, io_group)
 
 
@@ -293,160 +345,35 @@ def main(vdda, vddd, verbose=True):
     conf_east(c, chip11_key, chip12_key, 12, IO_GROUP, IO_CHAN)
     all_keys.append(chip12_key)
 
+    enable_pedestal(c, chip11_key, vref_dac=223)
+    enable_pedestal(c, chip12_key, vref_dac=223)
 
-    # add third chip
-#    chip13_key = larpix.key.Key(IO_GROUP, IO_CHAN, 13)
-#    conf_east(c, chip12_key, chip13_key, 13, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip13_key)
-#
-#    # add fourth chip
-#    chip14_key = larpix.key.Key(IO_GROUP, IO_CHAN, 14)
-#    conf_east(c, chip13_key, chip14_key, 14, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip14_key)
-#
-#    # add fifth chip
-#    chip15_key = larpix.key.Key(IO_GROUP, IO_CHAN, 15)
-#    conf_east(c, chip14_key, chip15_key, 15, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip15_key)
-#    
-#    # add second root chain
-#    IO_CHAN = IO_CHAN + 1
-#    
-#    #print('IO_CHAN')
-#    chip21_key = larpix.key.Key(IO_GROUP, IO_CHAN, 21)
-#    conf_root(c, chip21_key, 21, IO_GROUP, IO_CHAN, pacman_version)
-#    all_keys.append(chip21_key)
-#    
-#    # add second chip
-#    chip22_key = larpix.key.Key(IO_GROUP, IO_CHAN, 22)
-#    conf_east(c, chip21_key, chip22_key, 22, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip22_key)
-#
-#    # # add third chip
-#    chip23_key = larpix.key.Key(IO_GROUP, IO_CHAN, 23)
-#    conf_east(c, chip22_key, chip23_key, 23, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip23_key)
-#
-#    # add fourth chip
-#    chip24_key = larpix.key.Key(IO_GROUP, IO_CHAN, 24)
-#    conf_east(c, chip23_key, chip24_key, 24, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip24_key)
-#
-#    # add fifth chip
-#    chip25_key = larpix.key.Key(IO_GROUP, IO_CHAN, 25)
-#    conf_east(c, chip24_key, chip25_key, 25, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip25_key)
-#
-#    # add third root chain
-#    IO_CHAN = IO_CHAN + 1
-#    
-#    chip31_key = larpix.key.Key(IO_GROUP, IO_CHAN, 31)
-#    conf_root(c, chip31_key, 31, IO_GROUP, IO_CHAN, pacman_version)
-#    all_keys.append(chip31_key)
-#    
-#    # add second chip
-#    chip32_key = larpix.key.Key(IO_GROUP, IO_CHAN, 32)
-#    conf_east(c, chip31_key, chip32_key, 32, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip32_key)
-#
-#    # add third chip
-#    chip33_key = larpix.key.Key(IO_GROUP, IO_CHAN, 33)
-#    conf_east(c, chip32_key, chip33_key, 33, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip33_key)
-#    # add fourth chip
-#    chip34_key = larpix.key.Key(IO_GROUP, IO_CHAN, 34)
-#    conf_east(c, chip33_key, chip34_key, 34, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip34_key)
-#
-#    # add fifth chip
-#    chip35_key = larpix.key.Key(IO_GROUP, IO_CHAN, 35)
-#    conf_east(c, chip34_key, chip35_key, 35, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip35_key)
-#    
-#    # add fourth root chain
-#     
-#    IO_CHAN = IO_CHAN + 1
-#
-#    chip41_key = larpix.key.Key(IO_GROUP, IO_CHAN, 41)
-#    
-#    conf_root(c, chip41_key, 41, IO_GROUP, IO_CHAN, pacman_version)
-#    #conf_south(c, chip31_key, chip41_key, 41, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip41_key)
-#    
-#    # add second chip
-#    chip42_key = larpix.key.Key(IO_GROUP, IO_CHAN, 42)
-#    conf_east(c, chip41_key, chip42_key, 42, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip42_key)
-#
-#    # add third chip
-#    chip43_key = larpix.key.Key(IO_GROUP, IO_CHAN, 43)
-#    conf_east(c, chip42_key, chip43_key, 43, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip43_key)
-#    
-#    # add fourth chip
-#    chip44_key = larpix.key.Key(IO_GROUP, IO_CHAN, 44)
-#    conf_east(c, chip43_key, chip44_key, 44, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip44_key)
-#
-#    # add fifth chip
-#    chip45_key = larpix.key.Key(IO_GROUP, IO_CHAN, 45)
-#    conf_east(c, chip44_key, chip45_key, 45, IO_GROUP, IO_CHAN)
-#    all_keys.append(chip45_key)
-#
-#    # add 51 south
-#    chip51_key=larpix.key.Key(IO_GROUP,IO_CHAN,51)
-#    conf_south(c,chip41_key,chip51_key,51,IO_GROUP,IO_CHAN)
-#    all_keys.append(chip51_key)
-#
-#    # add 52 south
-#    chip52_key=larpix.key.Key(IO_GROUP,IO_CHAN,52)
-#    conf_east(c,chip51_key,chip52_key,52,IO_GROUP,IO_CHAN)
-#    all_keys.append(chip52_key)
-#
-#    # add 53 south
-#    chip53_key=larpix.key.Key(IO_GROUP,IO_CHAN,53)
-#    conf_east(c,chip52_key,chip53_key,53,IO_GROUP,IO_CHAN)
-#    all_keys.append(chip53_key)
-#
-#    # add 54 south
-#    chip54_key=larpix.key.Key(IO_GROUP,IO_CHAN,54)
-#    conf_east(c,chip53_key,chip54_key,54,IO_GROUP,IO_CHAN)
-#    all_keys.append(chip54_key)
-#
-#    # add 54 south
-#    chip55_key=larpix.key.Key(IO_GROUP,IO_CHAN,55)
-#    conf_east(c,chip54_key,chip55_key,55,IO_GROUP,IO_CHAN)
-#    all_keys.append(chip55_key)
-    ##
-    # Write some registers to all of the chips
-    
-    # c.io.reset_larpix(length=16)
     # request internal reset at 0x00100410 and provided tile mask
     c.io.set_reg(0x00100410, 0x3ff, io_group)
 
 
-    c.reads.clear()
-    all_configured=True
-    not_configured=[]
-    for key in tqdm.tqdm(all_keys):
+    # c.reads.clear()
+    # all_configured=True
+    # not_configured=[]
+    # for key in tqdm.tqdm(all_keys):
 
-        set_register(c, key, 'channel_mask', [0]*64)
-        set_register(c, key, 'csa_enable', [1]*64)
-        set_register(c, key, 'enable_periodic_trigger', 1)
-        set_register(c, key, 'periodic_trigger_cycles', int(1e5))
+    #     set_register(c, key, 'channel_mask', [0]*64)
+    #     set_register(c, key, 'csa_enable', [1]*64)
+    #     set_register(c, key, 'enable_periodic_trigger', 1)
+    #     set_register(c, key, 'periodic_trigger_cycles', 57812)
 
-        ok, diff = c.enforce_configuration(key, timeout=0.1, n=2, n_verify=2)
-        if ok:
-            pass
-        else:
-            all_configured=False
-            not_configured.append(key)
+    #     ok, diff = c.enforce_configuration(key, timeout=0.1, n=2, n_verify=2)
+    #     if ok:
+    #         pass
+    #     else:
+    #         all_configured=False
+    #         not_configured.append(key)
 
-    if all_configured:
-        print('All chips configured!')
-    else:
-        print('NOT configured:', not_configured)
-    save_controller(c)
+    # if all_configured:
+    #     print('All chips configured!')
+    # else:
+    #     print('NOT configured:', not_configured)
+    # save_controller(c)
 
     return
 
