@@ -345,8 +345,18 @@ def main(vdda, vddd, verbose=True):
     conf_east(c, chip11_key, chip12_key, 12, IO_GROUP, IO_CHAN)
     all_keys.append(chip12_key)
 
+     # add fourth root chain
+     
+    IO_CHAN = IO_CHAN + 1
+
+    chip41_key = larpix.key.Key(IO_GROUP, IO_CHAN, 41)
+    
+    conf_root(c, chip41_key, 41, IO_GROUP, IO_CHAN, pacman_version)
+    all_keys.append(chip41_key)
+
     enable_pedestal(c, chip11_key, vref_dac=223)
     enable_pedestal(c, chip12_key, vref_dac=223)
+    enable_pedestal(c, chip41_key, vref_dac=223)
 
     unmask(c, all_keys)
 
