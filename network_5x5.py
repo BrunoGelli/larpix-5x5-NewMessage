@@ -271,15 +271,14 @@ def enable_SelfTrigger(c, key, vref_dac=255):
         print(diff)
 
 def unmask(c, keys):
-    for i in range(10):
-        for key in reversed(keys):
+    for key in reversed(keys):
 
-            c[key].config.csa_enable = [1]*64
-            c[key].config.channel_mask = [1]*64
-            c[key].config.periodic_trigger_mask = [0]*64
-            c.write_configuration(key, 'periodic_trigger_mask')
-            c.write_configuration(key, 'csa_enable')
-            c.write_configuration(key, 'channel_mask')
+        c[key].config.csa_enable = [1]*64
+        c[key].config.channel_mask = [0]*64
+        c[key].config.periodic_trigger_mask = [1]*64
+        c.write_configuration(key, 'periodic_trigger_mask')
+        c.write_configuration(key, 'csa_enable')
+        c.write_configuration(key, 'channel_mask')
 
 def conf_root(c, cm, cadd, iog, iochan, pacman_version):
     I_TX_DIFF = 7
@@ -516,16 +515,18 @@ def main(vdda, vddd, verbose=True):
     conf_east(c,chip54_key,chip55_key,55,IO_GROUP,IO_CHAN)
     all_keys.append(chip55_key)
 
-    for ChipKey in all_keys:
-        # enable_pedestal(c, ChipKey,vref_dac=223)
-        enable_SelfTrigger(c, ChipKey,vref_dac=223)
-        
+    # for ChipKey in all_keys:
+    #     # enable_pedestal(c, ChipKey,vref_dac=223)
+    #     enable_SelfTrigger(c, ChipKey,vref_dac=223)
 
-    unmask(c, all_keys)
+
+    # unmask(c, all_keys)
 
     # request internal reset at 0x00100410 and provided tile mask
     c.io.set_reg(0x00100410, 0x3ff, io_group)
 
+    save_controller(c)
+    
     return
 
 if __name__ == '__main__':
