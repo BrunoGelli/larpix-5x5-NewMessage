@@ -224,7 +224,11 @@ def configure_selected_chip(
     # Enable only this chip.  The rest of the controller was masked first by
     # ``mask_chip_quiet``.
     config.channel_mask = [0] * N_CHANNELS
-    config.csa_enable = [1] * N_CHANNELS
+    csa_mask = [1] * N_CHANNELS
+    csa_mask[30] = 0
+    csa_mask[31] = 0
+    csa_mask[29] = 0
+    config.csa_enable = csa_mask
     config.periodic_trigger_mask = [1] * N_CHANNELS
 
     # Configuring resets
