@@ -227,6 +227,11 @@ def configure_selected_chip(
     config.csa_enable = [1] * N_CHANNELS
     config.periodic_trigger_mask = [1] * N_CHANNELS
 
+    # Configuring resets
+    config.enable_periodic_reset = 1
+    config.enable_rolling_periodic_reset = 1
+    config.periodic_reset_cycles = 40
+
     write_registers(
         controller,
         chip_key,
@@ -236,6 +241,9 @@ def configure_selected_chip(
             "channel_mask",
             "csa_enable",
             "periodic_trigger_mask",
+            "enable_periodic_reset",
+            "enable_rolling_periodic_reset",
+            "periodic_reset_cycles",
         ],
     )
 
