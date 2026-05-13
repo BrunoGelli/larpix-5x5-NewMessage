@@ -199,11 +199,28 @@ def mask_chip_quiet(controller: Any, chip_key) -> None:
     state here uses ``channel_mask = [0] * 64``.
     """
     config = controller[chip_key].config
-    config.channel_mask = [0] * N_CHANNELS
-    config.csa_enable = [0] * N_CHANNELS
-    config.periodic_trigger_mask = [1] * N_CHANNELS
-    write_registers(controller, chip_key, ["channel_mask", "csa_enable", "periodic_trigger_mask"])
+    config.channel_mask = [1] * N_CHANNELS #High to disable channel
+    config.csa_enable = [0] * N_CHANNELS #High to enabled CSA (otherwise leave in hard reset)
+    write_registers(controller, chip_key, ["channel_mask", "csa_enable"])
 
+
+def unmask_chip(controller: Any, chip_key) -> None:
+    """Unmask one chip.
+
+    We set both channel-level readout masks and CSA enables.  The existing UCD
+    scripts use ``channel_mask = [1] * 64`` to unmask channels, so the quiet
+    state here uses ``channel_mask = [0] * 64``.
+    """
+    config = controller[chip_key].config
+    config.channel_mask = [0] * N_CHANNELS #High to disable channel
+
+    # Enable only this chip.  The rest of the controller was masked first by
+    csa_mask = [1] * N_CHANNELS
+    csa_mask[30] = 0
+    csa_mask[31] = 0
+    csa_mask[29] = 0
+    config.csa_enable = csa_mask #High to enabled CSA (otherwise leave in hard reset)
+    write_registers(controller, chip_key, ["channel_mask", "csa_enable"])
 
 def configure_selected_chip(
     controller: Any,
@@ -221,16 +238,6 @@ def configure_selected_chip(
     config.threshold_global = threshold_global
     config.pixel_trim_dac = [pixel_trim_dac] * N_CHANNELS
 
-    # Enable only this chip.  The rest of the controller was masked first by
-    # ``mask_chip_quiet``.
-    config.channel_mask = [0] * N_CHANNELS
-    csa_mask = [1] * N_CHANNELS
-    csa_mask[30] = 0
-    csa_mask[31] = 0
-    csa_mask[29] = 0
-    config.csa_enable = csa_mask
-    config.periodic_trigger_mask = [1] * N_CHANNELS
-
     # Configuring resets
     config.enable_periodic_reset = 1
     config.enable_rolling_periodic_reset = 1
@@ -242,9 +249,6 @@ def configure_selected_chip(
         [
             "threshold_global",
             "pixel_trim_dac",
-            "channel_mask",
-            "csa_enable",
-            "periodic_trigger_mask",
             "enable_periodic_reset",
             "enable_rolling_periodic_reset",
             "periodic_reset_cycles",
@@ -440,6 +444,8 @@ def run_threshold_scan(args: argparse.Namespace) -> None:
             pixel_trim_dac=args.pixel_trim_dac,
             enforce=not args.no_enforce,
         )
+        print("Now unmasking the chip: ")
+        unmask_chip(controller, selected_key)
 
         tag = f"chip{args.chip_id}_thr{threshold_global}_trim{args.pixel_trim_dac}"
         h5_file = record_threshold_point(controller, args.out_dir, args.io_group, args.record_seconds, tag)
