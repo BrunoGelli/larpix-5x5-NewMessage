@@ -219,6 +219,7 @@ def unmask_chip(controller: Any, chip_key) -> None:
     csa_mask[30] = 0
     csa_mask[31] = 0
     csa_mask[29] = 0
+    csa_mask[39] = 0
     config.csa_enable = csa_mask #High to enabled CSA (otherwise leave in hard reset)
     write_registers(controller, chip_key, ["channel_mask", "csa_enable"])
 
@@ -241,7 +242,7 @@ def configure_selected_chip(
     # Configuring resets
     config.enable_periodic_reset = 1
     config.enable_rolling_periodic_reset = 1
-    config.periodic_reset_cycles = 40
+    config.periodic_reset_cycles = 4000
 
     write_registers(
         controller,

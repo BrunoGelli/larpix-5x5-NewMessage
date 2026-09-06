@@ -20,7 +20,7 @@ def enable_SelfTrigger(c, key, vref_dac=255):
     c[key].config.enable_hit_veto = 1
     c[key].config.enable_periodic_trigger_veto = 0
 
-    c[key].config.threshold_global = 255
+    c[key].config.threshold_global = 120
     c[key].config.periodic_reset_cycles = 40
 
     c[key].config.cds_mode = 0
@@ -77,7 +77,7 @@ def main(vdda, vddd, verbose=True):
     all_keys = c.chips.keys()
 
     # request internal reset at 0x00100410 and provided tile mask
-    c.io.set_reg(0x00100410, 0x3ff, io_group)
+    c.io.set_reg(0x00100410, 0x3ff, 1)
 
     for ChipKey in all_keys:
         enable_SelfTrigger(c, ChipKey,vref_dac=223)
@@ -85,7 +85,7 @@ def main(vdda, vddd, verbose=True):
     unmask(c, all_keys)
 
     # request internal reset at 0x00100410 and provided tile mask
-    c.io.set_reg(0x00100410, 0x3ff, io_group)
+    c.io.set_reg(0x00100410, 0x3ff, 1)
     
     return
 
